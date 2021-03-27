@@ -33,10 +33,6 @@ app.get("/", (req, res, next) => {
     res.json({"message":"Ok"})
 });
 
-
-
-
-
 /*Middleware functions are functions that have access to the request object 0
     (req), the response object (res), and the next middleware function in 
     the application’s request-response cycle. The next middleware function 
@@ -89,6 +85,30 @@ app.get("/api/menu/:opt", (req, res, next) => {
         })
         .catch(err => {
             res.status(400).json({"error": err.message})
+        })
+    }
+    else if(req.params.opt == "PubDev"){
+        videogames.allCreators()
+        .then(pdTable => {
+            res.json({
+                "message": `success`,
+                "data":pdTable
+            })
+        })
+        .catch(err => {
+            res.status(400).json({"error":err.message})
+        })
+    }
+    else if(req.params.opt == "Platform"){
+        videogames.allPlatforms()
+        .then(pTable => {
+            res.json({
+                "message": `success`,
+                "data":pTable
+            })
+        })
+        .catch(err => {
+            res.status(400).json({"error":err.message})
         })
     }
 });
