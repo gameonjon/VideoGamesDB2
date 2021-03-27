@@ -55,6 +55,42 @@ class db{
             //"GROUP BY r_gameID" +
     }
 
+    allCreators() {
+        return this.all(
+            "SELECT DISTINCT g_title AS GameTitle, p_name AS Publisher, d_name AS Developer" +
+                " FROM Games, Developer, Publisher, Contracts" +
+                " WHERE g_gameID = c_gameID AND" +
+                    " c_devkey = d_devkey AND" +
+                    " c_pubkey = p_pubkey" +
+            " UNION" +
+            " SELECT DISTINCT g_title AS GameTitle, p_name AS Publisher, c_devkey AS Developer" +
+                " FROM Games, Developer, Publisher, Contracts" +
+                " WHERE g_gameID = c_gameID AND" +
+                    " p_pubkey = c_pubkey AND" +
+                    " c_devkey NOT IN (SELECT c_devkey" +
+                    " FROM Contracts, Publisher, Developer, Games" +
+                    "  WHERE p_pubkey = c_pubkey AND" +
+                    " c_devkey = d_devkey AND" +
+                    " g_gameID = c_gameID)" +
+            " UNION" +
+            " SELECT DISTINCT g_title AS GameTitle, c_pubkey AS Publisher, d_name AS Developer" +
+                " FROM Games, Developer, Publisher, Contracts" +
+                " WHERE g_gameID = c_gameID AND" +
+                    " d_devkey = c_devkey AND" +
+                    " c_pubkey NOT IN (SELECT c_pubkey" +
+                    "  FROM Contracts, Publisher, Developer, Games" +
+                    " WHERE p_pubkey = c_pubkey AND" +
+                    " c_devkey = d_devkey AND" +
+                    " g_gameID = c_gameID)", [])
+    }
+    
+    allPlatforms(){
+        return this.all(
+            "SELECT DISTINCT g_title AS GameTitle, pf_system AS Platform" +
+            " FROM Games, Platform" +
+            " WHERE g_exkey = pf_exkey", [])
+    }
+
     
 
 
