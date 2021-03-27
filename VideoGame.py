@@ -211,60 +211,60 @@ def populate_Contracts(_conn):
             (2, 10004, 20005),
             #star wars : battlefront 2
             (3, 10004, 20006),
-            (3, '\0', 20007),
-            (3, '\0', 20008),
+            (3, "NULL", 20007),
+            (3, "NULL", 20008),
             #death stranding
             (4, 10005, 20009),
-            (4, 10006, '\0'),
+            (4, 10006, "NULL"),
             #overwatch
             (5, 10007, 20010),
-            (5, '\0', 20011),
+            (5, "NULL", 20011),
             #bioshock the collection
             (6, 10008, 20012),
-            (6, '\0', 20013),
-            (6, '\0', 20014),
-            (6, '\0', 20015),
-            (6, '\0', 20016),
+            (6, "NULL", 20013),
+            (6, "NULL", 20014),
+            (6, "NULL", 20015),
+            (6, "NULL", 20016),
             #dying light
             (7, 10010, 20017),
-            (7, 10011, '\0'),
+            (7, 10011, "NULL"),
             #battlefield 4
             (8, 10004, 20006),
-            (8, '\0', 20029),
+            (8, "NULL", 20029),
             #COD mw remastered
             (9, 10012, 20018),
-            (9, '\0', 20019),
-            (9, '\0', 20020),
+            (9, "NULL", 20019),
+            (9, "NULL", 20020),
             #tom clancy ghost recon
             (10, 10013, 20021),
             (10, 10014, 20022),
             (10, 10015, 20023),
             (10, 10016, 20030),
-            (10, '\0', 20031),
-            (10, '\0', 20032),
-            (10, '\0', 20033),
-            (10, '\0', 20034),
-            (10, '\0', 20035),
-            (10, '\0', 20036),
-            (10, '\0', 20037),
-            (10, '\0', 20038),
-            (10, '\0', 20039),
-            (10, '\0', 20040),
-            (10, '\0', 20041),
-            (10, '\0', 20042),
-            (10, '\0', 20043),
-            (10, '\0', 20044),
-            (10, '\0', 20045),
-            (10, '\0', 20046),
-            (10, '\0', 20047),
-            (10, '\0', 20048),
+            (10, "NULL", 20031),
+            (10, "NULL", 20032),
+            (10, "NULL", 20033),
+            (10, "NULL", 20034),
+            (10, "NULL", 20035),
+            (10, "NULL", 20036),
+            (10, "NULL", 20037),
+            (10, "NULL", 20038),
+            (10, "NULL", 20039),
+            (10, "NULL", 20040),
+            (10, "NULL", 20041),
+            (10, "NULL", 20042),
+            (10, "NULL", 20043),
+            (10, "NULL", 20044),
+            (10, "NULL", 20045),
+            (10, "NULL", 20046),
+            (10, "NULL", 20047),
+            (10, "NULL", 20048),
             #killzone shadow fall
             (11, 10005, 20024),
             #TLOU Remastered
             (12, 10005, 20025),
             #star wars battlefront
             (13, 10004, 20006),
-            (13, '\0', 20008),
+            (13, "NULL", 20008),
             #horizon zero dawn
             (14, 10005, 20024),
             #Battlefield 1
@@ -273,10 +273,10 @@ def populate_Contracts(_conn):
             (16, 10004, 20049),
             #spider man
             (17, 10005, 20027),
-            (17, 10017, '\0'),
+            (17, 10017, "NULL"),
             #cod MW 2019
             (18, 10012, 20018),
-            (18, '\0', 20028)
+            (18, "NULL", 20028)
         ]
         sql = "INSERT INTO Contracts VALUES(?, ?, ?)"
         _conn.executemany(sql, contract)
@@ -442,7 +442,7 @@ def populate_Reviews(_conn):
             (6, 8, "Metro GameCentral", "Time has worn some holes in each games’ reputation, but these are still three of the most ambitious and daring action games of modern times."),
             (8, 8.4, "PC Gamer", "Although familiar to BF3, but BF4 remains a visually and sonically satisfying, reliably intense FPS. Improved by Commander Mode and a terrific and diverse map set."),
             (8, 9, "GamesRadar+", "Multiplayer shooters don't get better than Battlefield 4. Incredible destruction, smart map design, and solid tech combine to produce a true showcase for PS4 and PC. While solo play still lags behind, it's a big step up from BF3."),
-            (2, 9, "Easy Allies", '\0'),
+            (2, 9, "Easy Allies", "NULL"),
             (2, 9, "IGN", "Star Wars Jedi: Fallen Order makes up for a lot of lost time with a fantastic single-player action-adventure that marks the return of the playable Jedi."),
             (2, 7.3, "PC Gamer", "Technical issues marr an otherwise slick adventure. A must for Star Wars fans."),
             (14, 9, "GamesRadar+", "An open-world that tailors to each and every interest, Horizon: Zero Dawn keeps combat fresh, with an intriguing protagonist to match."),
