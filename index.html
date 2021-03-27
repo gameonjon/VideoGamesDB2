@@ -28,6 +28,10 @@
             //     )
             // }
 
+            function contentBox(){
+                
+            }
+
             function runQuery(){
                 var selOpt = document.getElementById('menu').value;
 
@@ -77,22 +81,31 @@
 <!--  -->
 
     <body> <!--onload="dropDownMenu()"-->
-        <label>Menu:</label>
-        <select name="menu" id="menu">
-            <option>------- Select --------</option>
-            <option value='Games'>Games</option>
-            <option value='Reviews'>Reviews</option>
-            <option value='Publishers'>Publishers</option>
-            <option value='Developers'>Developers</option>
-            <option value='Platform'>Platform</option>
-        </select>
+        <header class="flex">
+            <p class="introText">Video Game <span class="orangeText">Database</span></p>
+        </header>
+        
+        <nav>
+            <label>Menu:
+                <select name="menu" id="menu">
+                    <option>------- Select --------</option>
+                    <option value='Games'>Games</option>
+                    <option value='Reviews'>Reviews</option>
+                    <option value="PubDev">Publishers and Developers</option>
+                    <!-- <option value='Publishers'>Publishers</option>
+                    <option value='Developers'>Developers</option> -->
+                    <option value='Platform'>Platform</option>
+                </select>
 
+                <button name="runQ" onclick="runQuery()">Go</button>
+            </label>
+            
 
-        <button name="runQ" onclick="runQuery()">Go</button>
+        </nav>
 
         <br><br><br>
 
-        <table name="result" id="result"></table>
+        <table name="result" id="result" class="content"></table>
     
     
     </body>
