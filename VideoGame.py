@@ -39,9 +39,9 @@ def createTables(_conn):
             #STILL NEED CONNECTION TO SOME 
     try:
         sql = """CREATE TABLE Games (
-                    g_title varchar(30) NOT NULL,
+                    g_title varchar(30) UNIQUE NOT NULL,
                     g_year DATE NOT NULL,
-                    g_genre varchar(15),
+                    g_genre varchar(15) DEFAULT NULL,
                     g_exkey decimal(5,0),
                     g_gameID INTEGER PRIMARY KEY AUTOINCREMENT                   
                     )"""
@@ -74,13 +74,13 @@ def createTables(_conn):
         _conn.execute(sql)
 
         sql = """CREATE TABLE Publisher (
-                    p_name varchar(30) NOT NULL,
+                    p_name varchar(30) UNIQUE NOT NULL,
                     p_pubkey INTEGER PRIMARY KEY AUTOINCREMENT
                 )"""
         _conn.execute(sql)
 
         sql = """CREATE TABLE Developer (
-                    d_name varchar(30) NOT NULL,
+                    d_name varchar(30) UNIQUE NOT NULL,
                     d_devkey INTEGER PRIMARY KEY AUTOINCREMENT
                 )"""
         _conn.execute(sql)
