@@ -28,9 +28,6 @@
             //     )
             // }
 
-            function contentBox(){
-                
-            }
 
             function runQuery(){
                 var selOpt = document.getElementById('menu').value;
@@ -86,7 +83,7 @@
         </header>
         
         <nav>
-            <label>Menu:
+            <label class="">Menu:
                 <select name="menu" id="menu">
                     <option>------- Select --------</option>
                     <option value='Games'>Games</option>
@@ -99,8 +96,11 @@
 
                 <button name="runQ" onclick="runQuery()">Go</button>
             </label>
-            
 
+            <div class="">
+                <button><a href="addData.html">Add Data</a></button>
+            </div>
+            
         </nav>
 
         <br><br><br>
