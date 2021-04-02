@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>New Game Submission</title>
+        <link rel="stylesheet" href="./main.css">
+
+        <script>
+            function populateExclusive(){
+                var selExclusive = document.getElementById('pf_exkey');
+                selExclusive = "All";
+
+                const API_URL = 'http://127.0.0.1:8000/api/Platforms';
+                axios.get(`${API_URL}`)
+                    .then(response => {
+                        console.log(response.data.data);
+
+                        for(x=0; x<response.data.data.length; x++) {
+                            option = document.createElement('option');
+                            option.value = response.data.data[x].pf_exkey;
+                            option.text = response.data.data[x].pf_exkey;
+                            selExclusive.appendChild(option);
+                        }
+                    })
+                    .catch(error =>
+                        console.error('populateExclusives', error)
+                    )
+            }
+
+            // function runQuery()
+
+        </script>
+    </head>
+
+    <body onload="populateExclusive()">
+        <header class="flex">
+            <p class="introText"><span class="orangeText">Inserting a Game?</span></p>
+            <p class="introDesc">Make sure that you fill out the required fields</p>
+        </header>
+
+        <nav class="jc-r">
+            <div>
+                <button><a href="index.html">Home</a></button>
+            </div>
+            
+        </nav>
+
+        <br><br><br>
+
+        <form class="content">
+            Game Title: <input type="text" name="GameTitle" />
+            <br>
+            Release Date: <input type="date" name="releaseYear" />
+            <br>
+            Genre: <input type="text" name="Genre" />
+            <br>
+            Publisher: <input type="text" name="Publisher" />
+            <br>
+            Developer: <input type="text" name="Developer" />
+            <br>
+            Platform(s): <select name="exclusives" id="exclusives">
+                <option value="">-------SELECT-------</option>
+            </select>
+
+        </form>
+    </body>
+</html>
