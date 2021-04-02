@@ -84,11 +84,17 @@ class db{
                     " g_gameID = c_gameID)", [])
     }
     
-    allPlatforms(){
+    allGamePlatforms(){
         return this.all(
             "SELECT DISTINCT g_title AS GameTitle, pf_system AS Platform" +
             " FROM Games, Platform" +
             " WHERE g_exkey = pf_exkey", [])
+    }
+
+    allPlatforms(){
+        return this.all(
+            
+        )
     }
 
     
