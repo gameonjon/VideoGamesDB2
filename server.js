@@ -61,6 +61,20 @@ app.get("/api/games", (req, res, next) => {
         })        
 });
 
+app.get("api/Platforms", (req, res, next) => {
+    videogames.allPlatforms()
+        .then((platforms) => {
+            res.json({
+                "message": "success", 
+                "data": platforms
+            })
+        })
+        .catch((err) => {
+            res.status(400).json({ "error":err.message });
+            return;
+        })
+});
+
 app.get("/api/menu/:opt", (req, res, next) => {
     if(req.params.opt == "Games"){  //if the menu option =="games"
         videogames.allGames()
@@ -100,7 +114,7 @@ app.get("/api/menu/:opt", (req, res, next) => {
         })
     }
     else if(req.params.opt == "Platform"){
-        videogames.allPlatforms()
+        videogames.allGamePlatforms()
         .then(pTable => {
             res.json({
                 "message": `success`,
@@ -112,6 +126,14 @@ app.get("/api/menu/:opt", (req, res, next) => {
         })
     }
 });
+
+// Create new Game entry
+// app.post("/api/Games/", (req, res, next) => {
+//     var errors = []
+
+//     var sql = ""
+
+// });
 
 
 
