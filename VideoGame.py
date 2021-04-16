@@ -49,14 +49,17 @@ def createTables(_conn):
                     # g_devkey decimal(12,0) NOT NULL
         _conn.execute(sql)
 
+        #since Contracts table contains foreign keys, this is considered
+            # a referencing or child table. the referenced tables are 
+            # referenced or parent table
         sql = """CREATE TABLE Contracts (
                     c_gameID INTEGER,
                     c_pubkey INTEGER,
                     c_devkey INTEGER,
-                    FOREIGN KEY (c_gameID) REFERENCES Games(g_gameID),
-                    FOREIGN KEY (c_pubkey) REFERENCES Publisher(p_pubkey),
-                    FOREIGN KEY (c_devkey) REFERENCES Developer(d_devkey)
-                )"""
+                    FOREIGN KEY (c_gameID) REFERENCES Games(g_gameID) ON DELETE CASCADE,
+                    FOREIGN KEY (c_pubkey) REFERENCES Publisher(p_pubkey) ON DELETE CASCADE,
+                    FOREIGN KEY (c_devkey) REFERENCES Developer(d_devkey) ON DELETE CASCADE
+                )"""                                                    # ON UPDATE CASCADE....
         _conn.execute(sql)
 
         sql = """CREATE TABLE Platform (
@@ -107,25 +110,25 @@ def dropTables(_conn):
     print("Drop tables")
 
     try: 
-        sql = "DROP TABLE Games"
+        sql = "DROP TABLE IF EXISTS Games"
         _conn.execute(sql)
 
-        sql = "DROP TABLE Contracts"
+        sql = "DROP TABLE IF EXISTS Contracts"
         _conn.execute(sql)
 
-        sql = "DROP TABLE Platform"
+        sql = "DROP TABLE IF EXISTS Platform"
         _conn.execute(sql)
 
-        sql = "DROP TABLE Reviews"
+        sql = "DROP TABLE IF EXISTS Reviews"
         _conn.execute(sql)
 
-        sql = "DROP TABLE Publisher"
+        sql = "DROP TABLE IF EXISTS Publisher"
         _conn.execute(sql)
 
-        sql = "DROP TABLE Developer"
+        sql = "DROP TABLE IF EXISTS Developer"
         _conn.execute(sql)
 
-        sql = "DROP TABLE GamePlay"
+        sql = "DROP TABLE IF EXISTS GamePlay"
         _conn.execute(sql)
 
         _conn.commit()
@@ -155,9 +158,9 @@ def populateTable_Games(_conn):
             ("Star Wars: BattleFront 2", '2017-11-17', "shooter", 11, 3), #10004, 20006),
             #Platform: ps4, MSW
             ("Death Stranding", '2019-11-08', "action", 5, 4), # 10006, 20009),
-            #Platform: ps4, nintendo switch, xbox 1, msw
+            #Platform: ps4, nintendo, xbox 1, msw
             ("Overwatch", "2016-05-24", "shooter", 13, 5), #10007, 20010),
-            #Platform: ps4, xbox1, msw, nintendo switch
+            #Platform: ps4, xbox1, msw, nintendo
             ("Bioshock: The Collection", '2016-09-13', "shooter", 13, 6), #10008, 20012),
             #Platform: ps4, xbox1, msw, linux, classic Mac os
             ("Dying Light", '2015-01-26', "action", 11, 7), # 10010, 20017), 
@@ -392,20 +395,21 @@ def populate_Platforms(_conn):
             ("Playstation", 1, 1),
             ("Xbox", 2, 1),
             ("PC", 3, 1),
-            ("Nintendo Switch", 4, 1),
+            ("Nintendo", 4, 1),
 
-            ("PC\nPlaystation", 5, 0),
-            ("PC\nXbox", 6, 0),
-            ("PC\nNintendo Switch", 7, 0),
-            ("Playstation\nXbox", 8, 0),
-            ("Playstation\nNintendo Switch", 9, 0),
-            ("Xbox\nNintendo Switch", 10, 0),
+            ("PC,Playstation", 5, 0),
+            ("PC,Xbox", 6, 0),
+            ("PC,Nintendo", 7, 0),
+            ("Playstation,Xbox", 8, 0),
+            ("Playstation,Nintendo", 9, 0),
+            ("Xbox,Nintendo", 10, 0),
 
-            ("PC\nPlaystation\nXbox", 11, 0),
-            ("Playstation\nXbox\nNintendo Switch", 12, 0),
-            ("PC\nPlaystation\nXbox\nNintendo Switch", 13, 0),
-            ("PC\nPlaystation\nNintendo Switch", 14, 0),
-            ("PC\nXbox\nNintendo Switch", 15, 0)
+            ("PC,Playstation,Xbox", 11, 0),
+            ("Playstation,Xbox,Nintendo", 12, 0),
+            ("PC,Playstation,Nintendo", 13, 0),
+            ("PC,Xbox,Nintendo", 14, 0),
+
+            ("PC,Playstation,Xbox,Nintendo", 15, 0)
             
         ]
         sql = "INSERT INTO Platform VALUES(?, ?, ?)"
