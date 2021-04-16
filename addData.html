@@ -5,29 +5,29 @@
         <title>New Game Submission</title>
         <link rel="stylesheet" href="./main.css">
 
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+
         <script>
-            function populateExclusive(){
-                var selExclusive = document.getElementById('pf_exkey');
-                selExclusive = "All";
-
-                const API_URL = 'http://127.0.0.1:8000/api/Platforms';
-                axios.get(`${API_URL}`)
-                    .then(response => {
-                        console.log(response.data.data);
-
-                        for(x=0; x<response.data.data.length; x++) {
-                            option = document.createElement('option');
-                            option.value = response.data.data[x].pf_exkey;
-                            option.text = response.data.data[x].pf_exkey;
-                            selExclusive.appendChild(option);
-                        }
-                    })
-                    .catch(error =>
-                        console.error('populateExclusives', error)
-                    )
+            function check() {
+                document.getElementById("platOpt").checked = true;
+            }
+            function uncheck() {
+                document.getElementById("platOpt").checked = false;
             }
 
-            // function runQuery()
+            function platformCB() {
+                var platVals = document.forms[0];
+                var plats = "";
+                var i;
+
+                for ( i=0; i < platVals.length; i++){
+                    if(platVals[i].checked){
+                        plats = plats + platVals[i].value + "\n";
+                    }
+                }
+                document.getElementById("platformOrder").value = plats;
+            }
 
         </script>
     </head>
@@ -44,24 +44,33 @@
             </div>
             
         </nav>
-
         <br><br><br>
 
-        <form class="content">
-            Game Title: <input type="text" name="GameTitle" />
-            <br>
-            Release Date: <input type="date" name="releaseYear" />
-            <br>
-            Genre: <input type="text" name="Genre" />
-            <br>
-            Publisher: <input type="text" name="Publisher" />
-            <br>
-            Developer: <input type="text" name="Developer" />
-            <br>
-            Platform(s): <select name="exclusives" id="exclusives">
-                <option value="">-------SELECT-------</option>
-            </select>
+        <!-- here we can connect our route request to this form -->
+        <!-- FORM ACTION ATTRIBUTE: specifies where to send form-data when submitted-->
+        <form action="http://localhost:8000/api/newGames/" method="POST" class="content">
+            Game Title: <input type="text" name="GameTitle" /><br>
+            Release Date: <input type="date" name="ReleaseYear" /><br>
+            Genre: <input type="text" name="Genre" /><br>
+            Publisher: <input type="text" name="Publisher" /><br>
+            Developer: <input type="text" name="Developer" /><br>
+            
+            Platform(s):<br>
+            <label><input type="checkbox" id="platOption" name="platOpt" value="PC"> PC</label><br>
+            <label><input type="checkbox" id="platOption" name="platOpt" value="Playstation"> Playstation</label><br>
+            <label><input type="checkbox" id="platOption" name="platOpt" value="Xbox"> Xbox</label><br>
+            <label><input type="checkbox" id="platOption" name="platOpt" value="Nintendo"> Nintendo</label><br>
+            <!-- <input type="button" onclick="platformCB()" value="Send Platforms"> DONT NEED REALLY -->
+<!-- 
+            <button id="btn"> Get Selected Platforms</button> -->
+<!-- 
+            <script src="checkboxes.js"></script>
+            <br><br> -->
+            <!-- <input type="text" id="platformOrder" size="70">    DONT NEED REALLY -->
 
+            <button type="submit" id="btn" class="">Execute Order</button>
         </form>
+<!-- 
+        <button name="runQ" onclick="runQuery()">Go</button> -->
     </body>
 </html>
