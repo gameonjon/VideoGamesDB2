@@ -8,9 +8,11 @@ var videogames = new db()
 
 //'body-parser' middleware module tries to parse the body content (URL en. or json) of post request
     // and store in 'req.body' object
+    //Notice how app.use(function below only focuses on passing to 'res')
 var bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+//app.use(bodyParser.json());   //might have to put this back in
+
 
 // Server port
 var HTTP_PORT = 8000
@@ -127,17 +129,119 @@ app.get("/api/menu/:opt", (req, res, next) => {
     }
 });
 
-// Create new Game entry
-// app.post("/api/Games/", (req, res, next) => {
-//     var errors = []
+//======================= Create new Game entry
+app.post("/api/newGames/", (req, res, next) => {
+    var errors=[]
 
-//     var sql = ""
+    //NOTE: the check mandatory fields were not looked into on POSTMAN when using a
+        //body x-www-url.... input. look into what these fields are actually for
+    if(!req.body.GameTitle){
+        errors.push("No Title entry");
+    }
+    if(!req.body.ReleaseYear){
+        errors.push("No Year specified");
+    }
+    if(!req.body.Genre){
+        errors.push("No genre specified");
+    }
+    if(!req.body.Publisher){
+        errors.push("No Publisher specified");
+    }
+    if(!req.body.Developer){
+        errors.push("No Developer specified")
+    }
+    //also need to check for platform entry!!!!!!!!!!!!!!!!!!!
 
-// });
+    if(errors.length){//Send list of errors
+        res.status(400).json({ "error":errors.join(",") });
+        return;
+    }
+
+    var data = {
+        gameTitle: req.body.GameTitle,
+        year: req.body.ReleaseYear,
+        genre: req.body.Genre,
+        publisher: req.body.Publisher,
+        developer: req.body.Developer,
+       // platformCB: req.body.platOpt   //this should get array for checkboxes
+
+        //this should replace the array of req.body.platOpt and place it in a single
+            //string for data.platformCB to use for the SQL query
+        //data.platformCB = videogames.getCheckboxValues(req.body.platOpt)
+        platformCB: videogames.getCheckboxValues(req.body.platOpt)
+    }    
+    // console.log(req.body.platOpt)
+    // console.log(data.platformCB)
+
+    // videogames.insertNewGame(data.gameTitle, data.year, data.genre, data.publisher, data.developer, data.platformCB)
+    //     .then(insertNew => {
+    //         res.json({
+    //             "message":`Success! New Game Added`,
+    //             "data":insertNew
+    //         })
+    //     })
+    //     .catch(err => {
+    //         res.status(400).json({"error":err.message})
+    //     })
+
+    videogames.insertNewGame(data.gameTitle, data.year, data.genre)
+        .then(insertNew => {
+            res.json({
+                "message":`Success! New Game Added`,
+                "data":insertNew
+            })
+        })
+        .catch(err => {
+            res.status(400).json({"error":err.message})
+        }) .don
+
+    videogames.updateNewGame(data.gameTitle, data.platformCB)
+        .then(insertNew => {
+            res.json({
+                "message":`Success! Updated exKey`,
+                "data":insertNew
+            })
+        })
+        .catch(err => {
+            res.status(400).json({"error":err.message})
+        })
+    videogames.insertPublisher(data.publisher)
+        .then(insertNew => {
+            res.json({
+                "message":`Success! insert Publisher`,
+                "data":insertNew
+            })
+        })
+        .catch(err => {
+            res.status(400).json({"error":err.message})
+        })
+    videogames.insertDeveloper(data.developer)
+        .then(insertNew => {
+            res.json({
+                "message":`Success! insert developer`,
+                "data":insertNew
+            })
+        })
+        .catch(err => {
+            res.status(400).json({"error":err.message})
+        })
+    videogames.insertContract(data.gameTitle, data.publisher, data.developer)
+        .then(insertNew => {
+            res.json({
+                "message":`Success! insert contract`,
+                "data":insertNew
+            })
+        })
+        .catch(err => {
+            res.status(400).json({"error":err.message})
+        })
 
 
 
 
+
+
+});
 
 
 
