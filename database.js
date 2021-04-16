@@ -97,7 +97,60 @@ class db{
         )
     }
 
-    
+    // insertNewGame(gTitle, gYear, gGenre, pPub, dDev, pfCB){
+    //     return this.all(
+    //         "INSERT INTO Games (g_title, g_year, g_genre) VALUES(?, ?, ?); " + 
+    //         "UPDATE Games SET g_exkey = (SELECT pf_exkey FROM Platform WHERE pf_system = ?) WHERE g_title = ?; " +
+    //         "INSERT INTO Publisher (p_name) VALUES(?); " +
+    //         "INSERT INTO Developer (d_name) VALUES(?); " +
+    //         "INSERT INTO Contracts (c_gameID, c_pubkey, c_devkey) " + 
+    //             "SELECT g_gameID, p_pubkey, d_devkey " +
+    //                     "FROM Games, Publisher, Developer " +
+    //                     "WHERE g_title = ? AND " +
+    //                         "p_name = ? AND " +
+    //                         "d_name = ?", [gTitle, gYear, gGenre, pfCB, gTitle, pPub, dDev, gTitle, pPub, dDev])
+    // }
+
+    insertNewGame(gTitle, gYear, gGenre){
+        return this.all(
+            "INSERT INTO Games (g_title, g_year, g_genre) VALUES(?, ?, ?)", [gTitle, gYear, gGenre]
+        )
+    }
+    updateNewGame(gTitle, pCB){
+        return this.all(
+            "UPDATE Games SET g_exkey = (SELECT pf_exkey FROM Platform WHERE pf_system = ?) WHERE g_title = ?", [gTitle, pCB]
+        )
+    }
+    insertPublisher(pPub){
+        return this.all(
+            "INSERT INTO Publisher (p_name) VALUES(?)", [pPub]
+        )
+    }
+    insertDeveloper(dDev){
+        return this.all(
+            "INSERT INTO Developer (d_name) VALUES(?)", [dDev]
+        )
+    }
+    insertContract(gTitle, pPub, dDev){
+        return this.all(
+            "INSERT INTO Contracts (c_gameID, c_pubkey, c_devkey) " + 
+                "SELECT g_gameID, p_pubkey, d_devkey " +
+                        "FROM Games, Publisher, Developer " +
+                        "WHERE g_title = ? AND " +
+                            "p_name = ? AND " +
+                            "d_name = ?", [gTitle, pPub, dDev]
+        )
+
+    }
+
+
+    //================ GET CHECKBOX VALUE
+    getCheckboxValues(checkboxArr){
+        //.join has a defualt to place "," between values;
+            //for different option change .join("")
+        var vals = checkboxArr.join();
+        return vals;
+    }
 
 
 
