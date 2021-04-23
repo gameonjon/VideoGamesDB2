@@ -11,8 +11,7 @@ const DBSOURCE = "./data.sqlite"
 //db is Initialization of the SQLite database
     //sqlite3.Database(filename, [model], [callback]). we have (dbsource, ,err).
         //this returns a new DB object and opens it
-
-class db{
+class DB{
     constructor(){
         this.db = new sqlite3.Database(DBSOURCE, (err) => {  //here '(err)' is the function that follows '=>'
             if(err){    //callback 
@@ -40,6 +39,7 @@ class db{
             })
         })
     }
+
 
     allGames() {    //SQL  for query. call to all() 
         return this.all(
@@ -88,19 +88,14 @@ class db{
         return this.all(
             "SELECT DISTINCT g_title AS GameTitle, pf_system AS Platform" +
             " FROM Games, Platform" +
-            " WHERE g_exkey = pf_exkey", [])
-    }
-
-    allPlatforms(){
-        return this.all(
-            
+            " WHERE g_exkey = pf_exkey", []
         )
     }
 
     // insertNewGame(gTitle, gYear, gGenre, pPub, dDev, pfCB){
     //     return this.all(
-    //         "INSERT INTO Games (g_title, g_year, g_genre) VALUES(?, ?, ?); " + 
-    //         "UPDATE Games SET g_exkey = (SELECT pf_exkey FROM Platform WHERE pf_system = ?) WHERE g_title = ?; " +
+    //         "INSERT INTO Games (g_title, g_year, g_genre) VALUES(?, ?, ?) " + 
+    //         "UPDATE Games SET g_exkey = (SELECT pf_exkey FROM Platform WHERE pf_system = ?) WHERE g_title = ? " +
     //         "INSERT INTO Publisher (p_name) VALUES(?); " +
     //         "INSERT INTO Developer (d_name) VALUES(?); " +
     //         "INSERT INTO Contracts (c_gameID, c_pubkey, c_devkey) " + 
@@ -111,6 +106,8 @@ class db{
     //                         "d_name = ?", [gTitle, gYear, gGenre, pfCB, gTitle, pPub, dDev, gTitle, pPub, dDev])
     // }
 
+
+
     insertNewGame(gTitle, gYear, gGenre){
         return this.all(
             "INSERT INTO Games (g_title, g_year, g_genre) VALUES(?, ?, ?)", [gTitle, gYear, gGenre]
@@ -118,7 +115,7 @@ class db{
     }
     updateNewGame(gTitle, pCB){
         return this.all(
-            "UPDATE Games SET g_exkey = (SELECT pf_exkey FROM Platform WHERE pf_system = ?) WHERE g_title = ?", [gTitle, pCB]
+            "UPDATE Games SET g_exkey = (SELECT pf_exkey FROM Platform WHERE pf_system = ?) WHERE g_title = ?", [pCB, gTitle]
         )
     }
     insertPublisher(pPub){
@@ -142,6 +139,32 @@ class db{
         )
 
     }
+    newGame(sql){
+        sql = "INSERT INTO Games (g_title, g_year, g_genre) VALUES(?, ?, ?)"
+        return sql
+    }
+    upNewGame(sql){
+        sql = "UPDATE Games SET g_exkey = (SELECT pf_exkey FROM Platform WHERE pf_system = ?) WHERE g_title = ?"
+        return sql
+    }
+    insertPub(){
+        var sql = "INSERT INTO Publisher (p_name) VALUES(?)"
+        return sql
+    }
+    insertDev(){
+        var sql = "INSERT INTO Developer (d_name) VALUES(?)"
+        return sql
+    }
+    insertCont(){
+        var sql = "INSERT INTO Contracts (c_gameID, c_pubkey, c_devkey) " + 
+                        "SELECT g_gameID, p_pubkey, d_devkey " +
+                                "FROM Games, Publisher, Developer " +
+                                "WHERE g_title = ? AND " +
+                                    "p_name = ? AND " +
+                                    "d_name = ?"
+        return sql
+    }
+
 
 
     //================ GET CHECKBOX VALUE
@@ -160,5 +183,5 @@ class db{
 }
 
 //this exports the database connection object 'db', so other scripts can use it
-module.exports = db
+module.exports = DB
 
