@@ -68,25 +68,128 @@ INSERT INTO Contracts(c_gameID, c_pubkey,
 
 
 --example of inserts above
-INSERT INTO Games (g_title, g_year, g_genre) VALUES("Resident Evil 5", '2009-05-03', "Survival horror")
+INSERT INTO Games (g_title, g_year, g_genre) VALUES("Resident Evil 5", '2009-05-03', "Survival horror");
+UPDATE Games
+    SET g_exkey = (SELECT pf_exkey FROM Platform WHERE pf_system = 'PC,Xbox,Nintendo')
+    WHERE g_title = 'Resident Evil 5';
+INSERT INTO Publisher (p_name) VALUES("Capcom");
+INSERT INTO Developer (d_name) VALUES("Capcom");
+INSERT INTO Contracts (c_gameID, c_pubkey, c_devkey)
+    SELECT g_gameID, p_pubkey, d_devkey
+            FROM Games, Publisher, Developer
+            WHERE g_title = 'Resident Evil 5' AND
+                p_name = 'Capcom' AND
+                d_name = 'Capcom';
+    -- second insert on Games
 
-INSERT INTO Publisher (p_name) VALUES("Capcom")
 
-INSERT INTO Developer (d_name) VALUES("Capcom")
+INSERT INTO Games (g_title, g_year, g_exkey, g_genre) VALUES(?, ?, ?, ?)
+UPDATE Games SET g_exkey = (SELECT pf_exkey FROM Platform WHERE pf_system = ?)
+    WHERE g_title = ?
+INSERT INTO Publisher (p_name) VALUES(?)
+INSERT INTO Developer (d_name) VALUES(?)
+INSERT INTO Contracts (c_gameID, c_pubkey, c_devkey)
+    SELECT g_gameID, p_pubkey, d_devkey
+            FROM Games, Publisher, Developer
+            WHERE g_title = ? AND
+                p_name = ? AND
+                d_name = ?
 
-INSERT INTO Contracts (c_gameID, c_pubkey, c_devkey) 
 
-DELETE FROM Games
-    WHERE g_title = "Resident Evil 5"
+
+
+-- Triggers part 2
+CREATE TRIGGER insert_GCPD INSTEAD OF INSERT ON Games
+FOR EACH ROW
+BEGIN
+    INSERT INTO Games (g_title, g_year, g_genre) VALUES(?, ?, ?);
+
+    INSERT INTO Publisher (p_name) VALUES(?);
+
+    INSERT INTO Developer (d_name) VALUES(?);
+
+    INSERT INTO Contracts (c_gameID, c_pubkey, c_devkey) 
+        SELECT NEW.g_gameID, NEW.p_pubkey, NEW.d_devkey
+            FROM Games, Publisher, Developer
+            WHERE g_title = NEW.g_title AND
+                p_name = NEW.p_name AND
+                d_name = NEW.d_name
+END
+
+CREATE TRIGGER insertGCPD AFTER INSERT ON Games
+FOR EACH ROW
+BEGIN
+    IF NOT EXISTS (SELECT * FROM Publisher
+                    WHERE p_name = 'Capcom')
+    BEGIN
+        INSERT INTO Publisher (p_name) VALUES('Capcom')
+    END
+    IF NOT EXISTS (SELECT * FROM Developer
+                    WHERE d_name = 'Capcom')
+    BEGIN
+        INSERT INTO Developer (d_name) VALUES('Capcom')
+    END
+
+    INSERT INTO Contracts (c_gameID, c_pubkey, c_devkey) 
+        SELECT NEW.g_gameID, p_pubkey, d_devkey
+            FROM Games, Publisher, Developer
+            WHERE g_title = NEW.g_title AND
+                p_name = 'Capcom' AND
+                d_name = 'Capcom'
+END
+
+DROP TRIGGER insertGCPD
+
+SELECT insert_GCPD, is_disabled FROM sys.triggers
+
+
+
+SELECT * FROM 
+
+SELECT DISTINCT g_title AS GameTitle, p_name AS Publisher, d_name AS Developer
+    FROM Games, Developer, Publisher, Contracts
+    WHERE g_gameID = c_gameID AND
+        c_devkey = d_devkey AND
+        c_pubkey = p_pubkey
+UNION
+SELECT DISTINCT g_title AS GameTitle, p_name AS Publisher, c_devkey AS Developer
+    FROM Games, Developer, Publisher, Contracts
+    WHERE g_gameID = c_gameID AND
+        p_pubkey = c_pubkey AND
+        -- c_devkey = NULL
+        c_devkey NOT IN (SELECT c_devkey
+                            FROM Contracts, Publisher, Developer, Games
+                            WHERE p_pubkey = c_pubkey AND
+                                c_devkey = d_devkey AND
+                                g_gameID = c_gameID)
+UNION
+SELECT DISTINCT g_title AS GameTitle, c_pubkey AS Publisher, d_name AS Developer
+    FROM Games, Developer, Publisher, Contracts
+    WHERE g_gameID = c_gameID AND
+        d_devkey = c_devkey AND
+        c_pubkey NOT IN (SELECT c_pubkey
+                            FROM Contracts, Publisher, Developer, Games
+                            WHERE p_pubkey = c_pubkey AND
+                                c_devkey = d_devkey AND
+                                g_gameID = c_gameID)
+    ORDER BY g_title
 
 --we also need a trigger to control the contracts update
 --this will go in VideoGame.py for DB setup
 CREATE TRIGGER insert_GCPD AFTER INSERT ON Games
 
+
 CREATE TRIGGER insert_GCPD INSTEAD OF INSERT ON Games
 FOR EACH ROW
 BEGIN
-    INSERT INTO Games(
+    INSERT INTO Games (g_title, g_year, g_genre) VALUES(?, ?, ?);
+
+    INSERT INTO Publisher (p_name) VALUES(?);
+
+    INSERT INTO Developer (d_name) VALUES(?);
+
+    INSERT INTO Contracts (c_gameID, c_pubkey, c_devkey) 
+        SELECT NEW.g_gameID, NEW.p_pubkey
 
 
 
@@ -118,6 +221,9 @@ CREATE VIEW GCPD(gameTitle, gameYear, genre, exKey, pubName, devName) AS
                                 c_devkey = d_devkey AND
                                 g_gameID = c_gameID)
 
+DROP VIEW GCPD
+
+INSERT INTO GCPD
 
 
 
