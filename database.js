@@ -98,27 +98,11 @@ class DB{
         )
     }
 
-    // insertNewGame(gTitle, gYear, gGenre, pPub, dDev, pfCB){
-    //     return this.all(
-    //         "INSERT INTO Games (g_title, g_year, g_genre) VALUES(?, ?, ?) " + 
-    //         "UPDATE Games SET g_exkey = (SELECT pf_exkey FROM Platform WHERE pf_system = ?) WHERE g_title = ? " +
-    //         "INSERT INTO Publisher (p_name) VALUES(?); " +
-    //         "INSERT INTO Developer (d_name) VALUES(?); " +
-    //         "INSERT INTO Contracts (c_gameID, c_pubkey, c_devkey) " + 
-    //             "SELECT g_gameID, p_pubkey, d_devkey " +
-    //                     "FROM Games, Publisher, Developer " +
-    //                     "WHERE g_title = ? AND " +
-    //                         "p_name = ? AND " +
-    //                         "d_name = ?", [gTitle, gYear, gGenre, pfCB, gTitle, pPub, dDev, gTitle, pPub, dDev])
-    // }
-
     getGame(gameID){
         return this.all(
             "SELECT * FROM Games WHERE g_gameID = ?", [gameID]
         )
     }
-
-
 
     insertNewGame(gTitle, gYear, gGenre){
         return this.all(
@@ -151,31 +135,6 @@ class DB{
         )
 
     }
-    newGame(sql){
-        sql = "INSERT INTO Games (g_title, g_year, g_genre) VALUES(?, ?, ?)"
-        return sql
-    }
-    upNewGame(sql){
-        sql = "UPDATE Games SET g_exkey = (SELECT pf_exkey FROM Platform WHERE pf_system = ?) WHERE g_title = ?"
-        return sql
-    }
-    insertPub(){
-        var sql = "INSERT INTO Publisher (p_name) VALUES(?)"
-        return sql
-    }
-    insertDev(){
-        var sql = "INSERT INTO Developer (d_name) VALUES(?)"
-        return sql
-    }
-    insertCont(){
-        var sql = "INSERT INTO Contracts (c_gameID, c_pubkey, c_devkey) " + 
-                        "SELECT g_gameID, p_pubkey, d_devkey " +
-                                "FROM Games, Publisher, Developer " +
-                                "WHERE g_title = ? AND " +
-                                    "p_name = ? AND " +
-                                    "d_name = ?"
-        return sql
-    }
 
     updateGame(title, year, genre, id){
         return this.all( 
@@ -193,8 +152,6 @@ class DB{
     
     }
 
-
-
     //================ GET CHECKBOX VALUE
     getCheckboxValues(checkboxArr){
         //.join has a defualt to place "," between values;
@@ -203,11 +160,6 @@ class DB{
         return vals;
     }
 
-
-
-
-
-    
 }
 
 //this exports the database connection object 'db', so other scripts can use it

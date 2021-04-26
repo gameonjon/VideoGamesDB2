@@ -79,20 +79,6 @@ app.get("/api/game/:id", (req, res, next) =>{
         })
 });
 
-// app.get("api/Platforms", (req, res, next) => {
-//     videogames.allPlatforms()
-//         .then((platforms) => {
-//             res.json({
-//                 "message": "success", 
-//                 "data": platforms
-//             })
-//         })
-//         .catch((err) => {
-//             res.status(400).json({ "error":err.message });
-//             return;
-//         })
-// });
-
 app.get("/api/menu/:opt", (req, res, next) => {
     if(req.params.opt == "Games"){  //if the menu option =="games"
         videogames.allGames()
@@ -178,41 +164,22 @@ app.post("/api/newGames/", (req, res, next) => {
         genre: req.body.Genre,
         publisher: req.body.Publisher,
         developer: req.body.Developer,
-       // platformCB: req.body.platOpt   //this should get array for checkboxes
 
-        //this should replace the array of req.body.platOpt and place it in a single
-            //string for data.platformCB to use for the SQL query
-        //data.platformCB = videogames.getCheckboxValues(req.body.platOpt)
+       // platformCB: req.body.platOpt   //this should get array for checkboxes
+        //this should replace the array of req.body.platOpt and place it in a single string for data.platformCB to use for the SQL query
         platformCB: videogames.getCheckboxValues(req.body.platOpt)
     }    
 
+    //1st method:
     // var sql = "INSERT INTO Games (g_title, g_year, g_genre) VALUES(?, ?, ?)"
     // console.log(sql)
     // var params = [data.gameTitle, data.year, data.genre]
     // videogames.db.run(sql, params, function (err, result){
-    //     if (err){
-    //         res.status(400).json({"error": err.message})
-    //         return;
-    //     }
-    //     res.json({  // everything worked
-    //         "message": "success: new gametitle\n",
-    //         "\ndata": data.gameTitle
-    //     })
-    // });
 
+    //2nd method:
     // videogames.insertNewGame(data.gameTitle, data.year, data.genre, data.publisher, data.developer, data.platformCB)
-    //     .then(insertNew => {
-    //         res.json({
-    //             "message":`Success! New Game Added`,
-    //             "data":insertNew
-    //         })
-    //     })
-    //     .catch(err => {
-    //         res.status(400).json({"error":err.message})
-    //     })
-
-    
-
+ 
+    //Final method:
     videogames.insertNewGame(data.gameTitle, data.year, data.genre)
         .catch(err => {
             res.status(400).json({"error":err.message})
