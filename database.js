@@ -106,6 +106,12 @@ class DB{
     //                         "d_name = ?", [gTitle, gYear, gGenre, pfCB, gTitle, pPub, dDev, gTitle, pPub, dDev])
     // }
 
+    getGame(gameID){
+        return this.all(
+            "SELECT * FROM Games WHERE g_gameID = ?", [gameID]
+        )
+    }
+
 
 
     insertNewGame(gTitle, gYear, gGenre){
@@ -163,6 +169,22 @@ class DB{
                                     "p_name = ? AND " +
                                     "d_name = ?"
         return sql
+    }
+
+    updateGame(title, year, genre, id){
+        return this.all( 
+            "UPDATE Games SET " +
+                "g_title = COALESCE(?, g_title), " +
+                "g_year = COALESCE(?, g_year), " +
+                "g_genre = COALESCE(?, g_genre) " +
+                "WHERE g_gameID = ?", [title, year, genre, id])
+    }
+    updateGamePf(pfCB, gameID){ //this is pf_system and g_gameID
+        return this.all(
+            "UPDATE Games " +
+            "SET g_exkey = COALESCE((SELECT pf_exkey FROM Platform WHERE pf_system = ?), g_exkey) " +
+            "WHERE g_gameID = ?", [pfCB, gameID])
+    
     }
 
 
