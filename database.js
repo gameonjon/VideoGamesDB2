@@ -92,6 +92,12 @@ class DB{
         )
     }
 
+    deleteGame(gameID){
+        return this.all(
+            "DELETE FROM Games WHERE g_gameID = ?", [gameID]
+        )
+    }
+
     // insertNewGame(gTitle, gYear, gGenre, pPub, dDev, pfCB){
     //     return this.all(
     //         "INSERT INTO Games (g_title, g_year, g_genre) VALUES(?, ?, ?) " + 
