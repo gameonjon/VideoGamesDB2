@@ -241,6 +241,7 @@ app.post("/api/newGames/", (req, res, next) => {
         })
 });
 
+//===========================UPDATE GAME
 app.patch("/api/game/:id", (req, res, next) => {
     //whatever the req.body. values are named are what they should be 
         //exactly when using POSTMAN.com for PATCH request testing
@@ -252,9 +253,7 @@ app.patch("/api/game/:id", (req, res, next) => {
         platform: req.body.platformCB   //POSTman still requires it to be "platformCB" when called to change
     }
         // console.log(req.body.platformCB)    //not sure why already works
-    // console.log(req.body.platOpt)    
     // console.log(req.body.GameTitle)
-    // console.log(req.body.gTitle)
 
     videogames.updateGame(data.game, data.year, data.genre, data.gameID)
     videogames.updateGamePf(data.platform, data.gameID)
@@ -269,8 +268,23 @@ app.patch("/api/game/:id", (req, res, next) => {
             res.status(400).json({"error":err.message})
             return;
         })
-
 });
+
+//=================DELETE GAME
+app.delete("/api/game/:id", (req, res, next) =>{
+    videogames.deleteGame(req.params.id)
+        .then(() =>{
+            res.json({
+                message: `Success in deleting game`,
+                changes: this.changes   //return number of rows affected
+            })
+            //if user not found/deleted, value = 0
+        })
+        .catch(err =>{
+            res.status(400).json({"error":res.message})
+            return;
+        })
+})
 
 
 
