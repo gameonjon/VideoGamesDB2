@@ -49,19 +49,35 @@ Middleware functions can perform the following tasks:
 // Insert here other API endpoints
 //======================================
 
-// app.get("/api/games", (req, res, next) => {
-//     videogames.allGames()
-//         .then((games) => {
-//             res.json({  //json payload contains the data pack. denoted with {} in query string
-//                 "message": "success",
-//                 "data": games
-//             })
-//         })
-//         .catch((err) => {
-//             res.status(400).json({ "error":err.message });
-//             return;
-//         })        
-// });
+app.get("/api/games", (req, res, next) => {
+    videogames.allGames()
+        .then((games) => {
+            res.json({  //json payload contains the data pack. denoted with {} in query string
+                "message": "success",
+                "data": games
+            })
+        })
+        .catch((err) => {
+            res.status(400).json({ "error":err.message });
+            return;
+        })        
+});
+
+app.get("/api/game/:id", (req, res, next) =>{
+    var params = [req.params.id]
+    // videogames.db.get()
+    videogames.getGame(params)
+        .then((game) =>{
+            res.json({
+                "message":"success",
+                "data":game
+            })
+        })
+        .catch((err) =>{
+            res.status(400).json({ "error":err.message })
+            return;
+        })
+});
 
 // app.get("api/Platforms", (req, res, next) => {
 //     videogames.allPlatforms()
@@ -216,15 +232,43 @@ app.post("/api/newGames/", (req, res, next) => {
     videogames.insertContract(data.gameTitle, data.publisher, data.developer)
         .then(() => {
             res.json({
-                "message":`Success! insert new game`,
+                "message":`Success! inserted new game`,
                 "data":data.gameTitle
             })            
         })
         .catch(err => {
             res.status(400).json({"error":err.message})
         })
+});
 
-        
+app.patch("/api/game/:id", (req, res, next) => {
+    //whatever the req.body. values are named are what they should be 
+        //exactly when using POSTMAN.com for PATCH request testing
+    var data = {
+        game: req.body.gameTitle,
+        year: req.body.releaseYear,
+        genre: req.body.genre,
+        gameID: req.params.id,
+        platform: req.body.platformCB   //POSTman still requires it to be "platformCB" when called to change
+    }
+        // console.log(req.body.platformCB)    //not sure why already works
+    // console.log(req.body.platOpt)    
+    // console.log(req.body.GameTitle)
+    // console.log(req.body.gTitle)
+
+    videogames.updateGame(data.game, data.year, data.genre, data.gameID)
+    videogames.updateGamePf(data.platform, data.gameID)
+        .then(() => {
+            res.json({
+                message:`Success! Updated current game in Database`,
+                data: data,
+                changes: this.changes
+            })            
+        })
+        .catch(err => {
+            res.status(400).json({"error":err.message})
+            return;
+        })
 
 });
 
