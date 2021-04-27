@@ -55,22 +55,11 @@ SELECT DISTINCT pf_system
         
 
 
+--======================================
 -- for app.post in server.js
 --======================================
 
---first games table
-INSERT INTO Games (g_title, g_year, g_genre) VALUES(?, ?, ?)
---Publishers table
-INSERT INTO Publisher (p_name) VALUES(?)
---Dev table
-INSERT INTO Developer (d_name) VALUES(?)
---next contracts table (wont show to client but need this for future references
--- of many to many relationships
-INSERT INTO Contracts(c_gameID, c_pubkey, 
-
-
-
---example of inserts above
+--example of inserts below
 INSERT INTO Games (g_title, g_year, g_genre) VALUES("Resident Evil 5", '2009-05-03', "Survival horror");
 UPDATE Games
     SET g_exkey = (SELECT pf_exkey FROM Platform WHERE pf_system = 'PC,Xbox,Nintendo')
@@ -83,7 +72,6 @@ INSERT INTO Contracts (c_gameID, c_pubkey, c_devkey)
             WHERE g_title = 'Resident Evil 5' AND
                 p_name = 'Capcom' AND
                 d_name = 'Capcom';
-    -- second insert on Games
 
 
 INSERT INTO Games (g_title, g_year, g_exkey, g_genre) VALUES(?, ?, ?, ?)
@@ -105,12 +93,6 @@ INSERT INTO Contracts (c_gameID, c_pubkey, c_devkey)
 CREATE TRIGGER insert_GCPD INSTEAD OF INSERT ON Games
 FOR EACH ROW
 BEGIN
-    INSERT INTO Games (g_title, g_year, g_genre) VALUES(?, ?, ?);
-
-    INSERT INTO Publisher (p_name) VALUES(?);
-
-    INSERT INTO Developer (d_name) VALUES(?);
-
     INSERT INTO Contracts (c_gameID, c_pubkey, c_devkey) 
         SELECT NEW.g_gameID, NEW.p_pubkey, NEW.d_devkey
             FROM Games, Publisher, Developer
@@ -145,59 +127,8 @@ DROP TRIGGER insertGCPD
 
 SELECT insert_GCPD, is_disabled FROM sys.triggers
 
-
-
-SELECT * FROM 
-
-SELECT DISTINCT g_title AS GameTitle, p_name AS Publisher, d_name AS Developer
-    FROM Games, Developer, Publisher, Contracts
-    WHERE g_gameID = c_gameID AND
-        c_devkey = d_devkey AND
-        c_pubkey = p_pubkey
-UNION
-SELECT DISTINCT g_title AS GameTitle, p_name AS Publisher, c_devkey AS Developer
-    FROM Games, Developer, Publisher, Contracts
-    WHERE g_gameID = c_gameID AND
-        p_pubkey = c_pubkey AND
-        -- c_devkey = NULL
-        c_devkey NOT IN (SELECT c_devkey
-                            FROM Contracts, Publisher, Developer, Games
-                            WHERE p_pubkey = c_pubkey AND
-                                c_devkey = d_devkey AND
-                                g_gameID = c_gameID)
-UNION
-SELECT DISTINCT g_title AS GameTitle, c_pubkey AS Publisher, d_name AS Developer
-    FROM Games, Developer, Publisher, Contracts
-    WHERE g_gameID = c_gameID AND
-        d_devkey = c_devkey AND
-        c_pubkey NOT IN (SELECT c_pubkey
-                            FROM Contracts, Publisher, Developer, Games
-                            WHERE p_pubkey = c_pubkey AND
-                                c_devkey = d_devkey AND
-                                g_gameID = c_gameID)
-    ORDER BY g_title
-
 --we also need a trigger to control the contracts update
 --this will go in VideoGame.py for DB setup
-CREATE TRIGGER updateGamePlat AFTER UPDATE ON Games
-    WHEN 
-        NEW.
-
-declare tem
-
-
-CREATE TRIGGER insert_GCPD INSTEAD OF INSERT ON Games
-FOR EACH ROW
-BEGIN
-    INSERT INTO Games (g_title, g_year, g_genre) VALUES(?, ?, ?);
-
-    INSERT INTO Publisher (p_name) VALUES(?);
-
-    INSERT INTO Developer (d_name) VALUES(?);
-
-    INSERT INTO Contracts (c_gameID, c_pubkey, c_devkey) 
-        SELECT NEW.g_gameID, NEW.p_pubkey
-
 
 
 
