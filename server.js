@@ -210,6 +210,11 @@ app.post("/api/newGames/", (req, res, next) => {
             })
     }, 5000);
 
+    //============================NOTE:
+        //Apparently 'setImmediate()' happens before 'setTimeout()' (and 'setInterval()',
+        // but we didnt use it). We use these timers to help us SCHEDULE a process. We basically
+        //  wait for the main code to run and after we focus on the Timers
+
     // setImmediate(() =>{
     //     videogames.insertContract(data.gameTitle, data.publisher, data.developer)
     //     .then(() => {
