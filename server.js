@@ -193,19 +193,42 @@ app.post("/api/newGames/", (req, res, next) => {
             res.status(400).json({"error":err.message})
         })
     videogames.insertDeveloper(data.developer)
+    
         .catch(err => {
             res.status(400).json({"error":err.message})
         })
-    videogames.insertContract(data.gameTitle, data.publisher, data.developer)
-        .then(() => {
-            res.json({
-                "message":`Success! inserted new game`,
-                "data":data.gameTitle
-            })            
-        })
-        .catch(err => {
-            res.status(400).json({"error":err.message})
-        })
+
+    //The problem here is you're trying to run all these queries at the same time. 
+        //(execute immediately after previous code has executed)
+    setTimeout(() =>{
+        videogames.insertContract(data.gameTitle, data.publisher, data.developer)
+            .then(() => {
+                res.json({
+                    "message":`Success! inserted new game`,
+                    "data":data
+                })            
+            })
+    }, 5000);
+
+    // setImmediate(() =>{
+    //     videogames.insertContract(data.gameTitle, data.publisher, data.developer)
+    //     .then(() => {
+    //         res.json({
+    //             "message":`Success! inserted new game`,
+    //             "data":data
+    //         })            
+    //     })
+    // });
+    // videogames.insertContract(data.gameTitle, data.publisher, data.developer)
+    //     .then(() => {
+    //         res.json({
+    //             "message":`Success! inserted new game`,
+    //             "data":data
+    //         })            
+    //     })
+    //     .catch(err => {
+    //         res.status(400).json({"error":err.message})
+    //     })
 });
 
 //===========================UPDATE GAME
